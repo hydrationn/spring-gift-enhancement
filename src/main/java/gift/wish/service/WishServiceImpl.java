@@ -56,7 +56,7 @@ public class WishServiceImpl implements WishService {
                 .orElseThrow(() -> new WishNotFoundException(wishId));
 
         if (!wish.isOwner(memberId)) {
-            throw new AccessDeniedException("이 위시를 삭제할 권한이 없습니다.");
+            throw new AccessDeniedException(memberId);
         }
 
         wishRepository.deleteWishById(wishId);
