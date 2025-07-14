@@ -18,6 +18,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<String> handleCustomException(CustomException e) {
+        logError(e);
         return ResponseEntity.status(e.getStatus()).body(e.getMessage());
     }
 
@@ -25,6 +26,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, List<String>>> handleValidationErrors(
             MethodArgumentNotValidException e
     ) {
+        logError(e);
         List<String> errors = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -38,8 +40,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception e) {
-        logger.error(e.getMessage(), e);
+        logError(e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("서버 에러가 발생했습니다: " + e.getMessage());
+    }
+
+    private void logError(Exception e) {
+        logger.error(e.getMessage(), e);
     }
 }
