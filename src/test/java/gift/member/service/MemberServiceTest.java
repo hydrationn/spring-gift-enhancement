@@ -9,7 +9,6 @@ import gift.member.exception.EmailAlreadyExistsException;
 import gift.member.exception.InvalidPasswordException;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
-import gift.member.service.MemberServiceImpl;
 import gift.security.config.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

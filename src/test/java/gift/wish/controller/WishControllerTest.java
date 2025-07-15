@@ -1,7 +1,6 @@
 package gift.wish.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.common.pagination.PageRequestDto;
 import gift.member.entity.Member;
 import gift.member.entity.Role;
 import gift.member.repository.MemberRepository;

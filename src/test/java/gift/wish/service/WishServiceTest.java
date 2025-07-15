@@ -6,7 +6,6 @@ import gift.product.repository.ProductRepository;
 import gift.wish.dto.WishResponseDto;
 import gift.wish.entity.Wish;
 import gift.wish.repository.WishRepository;
-import gift.wish.service.WishServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
