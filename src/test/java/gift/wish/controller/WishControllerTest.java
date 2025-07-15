@@ -57,7 +57,7 @@ class WishControllerTest {
                 .forEach(p -> productRepository.deleteProduct(p.getId()));
 
         Member savedMember = memberRepository.save(
-                new Member(null, "솨야", "wish@test.com", "pw", Role.USER)
+                new Member("솨야", "wish@test.com", "pw", Role.USER)
         );
         Product savedProduct = productRepository.createProduct(
                 new Product(null, "하리보 젤리", 1500, "http://img.url/test.png")
