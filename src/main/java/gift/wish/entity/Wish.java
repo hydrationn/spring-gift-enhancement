@@ -1,9 +1,20 @@
 package gift.wish.entity;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Wish {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @JoinColumn(name = "member_id", nullable = false)
     private Long memberId;
+
+    @JoinColumn(name = "product_id", nullable = false)
     private Long productId;
+
+    public Wish() {}
 
     public Wish(Long id, Long memberId, Long productId) {
         this.id = id;

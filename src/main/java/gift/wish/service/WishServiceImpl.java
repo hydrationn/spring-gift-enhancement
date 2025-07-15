@@ -10,6 +10,7 @@ import gift.wish.exception.DuplicateWishException;
 import gift.wish.exception.WishNotFoundException;
 import gift.wish.repository.WishRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,21 +26,21 @@ public class WishServiceImpl implements WishService {
 
     @Override
     public WishResponseDto createWish(Long memberId, Long productId) {
-        if (wishRepository.existsWishByMemberIdAndProductId(memberId, productId)) {
+        if (wishRepository.existsByMemberIdAndProductId(memberId, productId)) {
             throw new DuplicateWishException(memberId, productId);
         }
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
 
-        Wish savedWish = wishRepository.createWish(new Wish(memberId, productId));
+        Wish savedWish = wishRepository.save(new Wish(memberId, productId));
 
         return WishResponseDto.of(savedWish, product);
     }
 
     @Override
     public List<WishResponseDto> findAllWishesByMemberId(Long memberId) {
-        List<Wish> wishes = wishRepository.findAllWishByMemberId(memberId);
+        List<Wish> wishes = wishRepository.findAllByMemberId(memberId);
 
         return wishes.stream()
                 .map(wish -> {
@@ -51,14 +52,15 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
+    @Transactional
     public void deleteWish(Long memberId, Long wishId) {
-        Wish wish = wishRepository.findWishById(wishId)
+        Wish wish = wishRepository.findById(wishId)
                 .orElseThrow(() -> new WishNotFoundException(wishId));
 
         if (!wish.isOwner(memberId)) {
             throw new AccessDeniedException(memberId);
         }
 
-        wishRepository.deleteWishById(wishId);
+        wishRepository.delete(wish);
     }
 }

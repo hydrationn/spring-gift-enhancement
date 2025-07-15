@@ -37,9 +37,9 @@ class WishServiceTest {
         Long memberId = 1L;
         Long productId = 2L;
 
-        when(wishRepository.existsWishByMemberIdAndProductId(memberId, productId)).thenReturn(false);
+        when(wishRepository.existsByMemberIdAndProductId(memberId, productId)).thenReturn(false);
         when(productRepository.findById(productId)).thenReturn(Optional.of(new Product(productId, "하리보 젤리", 1500, "http://img.url/test.png")));
-        when(wishRepository.createWish(any(Wish.class))).thenReturn(new Wish(10L, memberId, productId));
+        when(wishRepository.save(any(Wish.class))).thenReturn(new Wish(10L, memberId, productId));
 
         WishResponseDto result = wishService.createWish(memberId, productId);
 
@@ -60,15 +60,15 @@ class WishServiceTest {
     @DisplayName("위시 ID로 삭제 시, deleteWishById가 수행된다. ")
     void shouldDeleteWish() {
         Long memberId = 1L;
-        Long wishId   = 5L;
-        Wish wish     = new Wish(wishId, memberId, 2L);
+        Long wishId = 5L;
+        Wish wish = new Wish(wishId, memberId, 2L);
 
-        when(wishRepository.findWishById(wishId))
+        when(wishRepository.findById(wishId))
                 .thenReturn(Optional.of(wish));
 
         wishService.deleteWish(memberId, wishId);
 
-        verify(wishRepository, atLeastOnce()).deleteWishById(wishId);
+        verify(wishRepository, atLeastOnce()).delete(wish);
     }
 
     @Test
@@ -78,7 +78,7 @@ class WishServiceTest {
         Wish wish = new Wish(1L, memberId, 2L);
         Product product = new Product(2L, "하리보 젤리(콜라맛)", 2000, "http://img.url/coke.png");
 
-        when(wishRepository.findAllWishByMemberId(memberId)).thenReturn(List.of(wish));
+        when(wishRepository.findAllByMemberId(memberId)).thenReturn(List.of(wish));
         when(productRepository.findById(2L)).thenReturn(Optional.of(product));
 
         List<WishResponseDto> result = wishService.findAllWishesByMemberId(memberId);

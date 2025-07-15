@@ -48,8 +48,7 @@ class WishControllerTest {
 
     @BeforeEach
     void setUp() {
-        wishRepository.findAllWishByMemberId(memberId != null ? memberId : 1L)
-                .forEach(w -> wishRepository.deleteWishById(w.getId()));
+        wishRepository.deleteAll();
         productRepository.deleteAll();
         memberRepository.deleteAll();
 
@@ -101,7 +100,7 @@ class WishControllerTest {
     @Test
     @DisplayName("위시 ID로 삭제 요청하면, 204(No Content)를 반환한다.")
     void shouldDeleteWish() throws Exception {
-        var savedWish = wishRepository.createWish(new Wish(null, memberId, productId));
+        var savedWish = wishRepository.save(new Wish(null, memberId, productId));
 
         mockMvc.perform(delete("/api/wishes/" + savedWish.getId())
                         .header("Authorization", "Bearer " + jwtToken))
