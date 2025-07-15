@@ -22,8 +22,9 @@ class MemberRepositoryTest {
 
         assertAll(
                 () -> assertThat(actual.getId()).isNotNull(),
+                () -> assertThat(actual.getName()).isEqualTo("솨야"),
                 () -> assertThat(actual.getEmail()).isEqualTo("psh@test.com"),
-                () -> assertThat(actual.getName()).isEqualTo("솨야")
+                () -> assertThat(actual.getPassword()).isEqualTo("1234")
         );
     }
 
@@ -37,14 +38,6 @@ class MemberRepositoryTest {
     }
 
     @Test
-    void delete() {
-        Member member = members.save(new Member("솨야", "psh@test.com", "1234", Role.USER));
-        members.delete(member);
-
-        assertThat(members.findById(member.getId())).isEmpty();
-    }
-
-    @Test
     void update() {
         Member member = members.save(new Member("솨야", "psh@test.com", "1234", Role.USER));
         member.update("박수화", "psh_update@test.com", "5678");
@@ -52,7 +45,16 @@ class MemberRepositoryTest {
         Member updated = members.findById(member.getId()).orElseThrow();
         assertAll(
                 () -> assertThat(updated.getName()).isEqualTo("박수화"),
-                () -> assertThat(updated.getEmail()).isEqualTo("psh_update@test.com")
+                () -> assertThat(updated.getEmail()).isEqualTo("psh_update@test.com"),
+                () -> assertThat(updated.getPassword()).isEqualTo("5678")
         );
+    }
+
+    @Test
+    void delete() {
+        Member member = members.save(new Member("솨야", "psh@test.com", "1234", Role.USER));
+        members.delete(member);
+
+        assertThat(members.findById(member.getId())).isEmpty();
     }
 }
