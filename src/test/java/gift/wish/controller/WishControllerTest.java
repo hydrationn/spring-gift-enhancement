@@ -1,7 +1,6 @@
-package gift.controller;
+package gift.wish.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.common.pagination.PageRequestDto;
 import gift.member.entity.Member;
 import gift.member.entity.Role;
 import gift.member.repository.MemberRepository;
@@ -48,18 +47,14 @@ class WishControllerTest {
 
     @BeforeEach
     void setUp() {
-        wishRepository.findAllWishByMemberId(memberId != null ? memberId : 1L)
-                .forEach(w -> wishRepository.deleteWishById(w.getId()));
-        memberRepository.findAllMembers()
-                .forEach(m -> memberRepository.deleteMember(m.getId()));
-        productRepository.findAllProducts(new PageRequestDto(0, Integer.MAX_VALUE))
-                .content()
-                .forEach(p -> productRepository.deleteProduct(p.getId()));
+        wishRepository.deleteAll();
+        productRepository.deleteAll();
+        memberRepository.deleteAll();
 
-        Member savedMember = memberRepository.saveMember(
-                new Member(null, "솨야", "wish@test.com", "pw", Role.USER)
+        Member savedMember = memberRepository.save(
+                new Member("솨야", "wish@test.com", "pw", Role.USER)
         );
-        Product savedProduct = productRepository.createProduct(
+        Product savedProduct = productRepository.save(
                 new Product(null, "하리보 젤리", 1500, "http://img.url/test.png")
         );
 
@@ -104,7 +99,7 @@ class WishControllerTest {
     @Test
     @DisplayName("위시 ID로 삭제 요청하면, 204(No Content)를 반환한다.")
     void shouldDeleteWish() throws Exception {
-        var savedWish = wishRepository.createWish(new Wish(null, memberId, productId));
+        var savedWish = wishRepository.save(new Wish(null, memberId, productId));
 
         mockMvc.perform(delete("/api/wishes/" + savedWish.getId())
                         .header("Authorization", "Bearer " + jwtToken))

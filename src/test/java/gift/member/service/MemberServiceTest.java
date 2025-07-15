@@ -1,4 +1,4 @@
-package gift.service;
+package gift.member.service;
 
 import gift.member.dto.MemberLoginRequestDto;
 import gift.member.dto.MemberRegisterRequestDto;
@@ -9,7 +9,6 @@ import gift.member.exception.EmailAlreadyExistsException;
 import gift.member.exception.InvalidPasswordException;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
-import gift.member.service.MemberServiceImpl;
 import gift.security.config.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,8 +40,8 @@ class MemberServiceTest {
         MemberRegisterRequestDto dto = createRegisterDto();
         Member saved = createMember();
 
-        when(memberRepository.findMemberByEmail(dto.email())).thenReturn(Optional.empty());
-        when(memberRepository.saveMember(any(Member.class))).thenReturn(saved);
+        when(memberRepository.findByEmail(dto.email())).thenReturn(Optional.empty());
+        when(memberRepository.save(any(Member.class))).thenReturn(saved);
         when(jwtProvider.generateToken(saved)).thenReturn("1234");
 
         // when
@@ -50,7 +49,7 @@ class MemberServiceTest {
 
         // then
         assertThat(response.token()).isEqualTo("1234");
-        verify(memberRepository, atLeast(1)).saveMember(any(Member.class));
+        verify(memberRepository, atLeast(1)).save(any(Member.class));
     }
 
     @Test
@@ -58,7 +57,7 @@ class MemberServiceTest {
     void shouldThrowIfEmailAlreadyExists() {
         // given
         var dto = createRegisterDto();
-        when(memberRepository.findMemberByEmail(dto.email()))
+        when(memberRepository.findByEmail(dto.email()))
                 .thenReturn(Optional.of(createMember()));
 
         // when & then
@@ -72,7 +71,7 @@ class MemberServiceTest {
         // given
         var dto = new MemberLoginRequestDto("psh@test.com", "1234");
         var member = createMember();
-        when(memberRepository.findMemberByEmail(dto.email())).thenReturn(Optional.of(member));
+        when(memberRepository.findByEmail(dto.email())).thenReturn(Optional.of(member));
         when(jwtProvider.generateToken(member)).thenReturn("token");
 
         // when
@@ -88,7 +87,7 @@ class MemberServiceTest {
         // given
         var dto = new MemberLoginRequestDto("psh@test.com", "wrong_pw");
         var member = createMember(); // password = "1234"
-        when(memberRepository.findMemberByEmail(dto.email())).thenReturn(Optional.of(member));
+        when(memberRepository.findByEmail(dto.email())).thenReturn(Optional.of(member));
 
         // when & then
         assertThatThrownBy(() -> memberService.login(dto))
@@ -99,7 +98,7 @@ class MemberServiceTest {
     @DisplayName("회원 삭제 시, 존재하지 않는 ID면 예외가 발생한다.")
     void shouldThrowIfDeletingNonExistentMember() {
         // given
-        when(memberRepository.findMemberById(999L)).thenReturn(Optional.empty());
+        when(memberRepository.findById(999L)).thenReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> memberService.deleteMember(999L))
@@ -107,17 +106,17 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원 삭제 성공 시 deleteMember가 정상 호출된다.")
+    @DisplayName("회원 삭제 성공 시 delete가 정상 호출된다.")
     void shouldDeleteMemberSuccessfully() {
         // given
         var member = createMember();
-        when(memberRepository.findMemberById(1L)).thenReturn(Optional.of(member));
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
 
         // when
         memberService.deleteMember(1L);
 
         // then
-        verify(memberRepository).deleteMember(1L);
+        verify(memberRepository).delete(member);
     }
 
     private MemberRegisterRequestDto createRegisterDto() {

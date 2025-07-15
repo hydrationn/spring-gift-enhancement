@@ -9,6 +9,7 @@ import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.security.config.JwtProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public TokenResponseDto register(MemberRegisterRequestDto memberRegisterRequestDto) {
         String email = memberRegisterRequestDto.email();
-        if (memberRepository.findMemberByEmail(email).isPresent()) {
+        if (memberRepository.findByEmail(email).isPresent()) {
             throw new EmailAlreadyExistsException(email);
         }
 
@@ -38,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
                 rawPassword,
                 Role.USER
         );
-        Member saved = memberRepository.saveMember(member);
+        Member saved = memberRepository.save(member);
 
         String token = jwtProvider.generateToken(saved);
         return new TokenResponseDto(token);
@@ -46,7 +47,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public TokenResponseDto login(MemberLoginRequestDto memberLoginRequestDto) {
-        Member member = memberRepository.findMemberByEmail(memberLoginRequestDto.email())
+        Member member = memberRepository.findByEmail(memberLoginRequestDto.email())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         if (!member.isPasswordMatch(memberLoginRequestDto.password())) {
@@ -60,7 +61,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<MemberResponseDto> findAllMembers() {
-        return memberRepository.findAllMembers().stream()
+        return memberRepository.findAll().stream()
                 .map(member -> new MemberResponseDto(
                         member.getId(),
                         member.getName(),
@@ -71,7 +72,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponseDto findMemberById(Long id) {
-        Member member = memberRepository.findMemberById(id)
+        Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(id));
         return new MemberResponseDto(
                 member.getId(),
@@ -82,17 +83,17 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void updateMember(Long id, MemberUpdateRequestDto memberUpdateRequestDto) {
-        Member member = memberRepository.findMemberById(id)
+        Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(id));
         member.update(memberUpdateRequestDto.name(), memberUpdateRequestDto.email(), memberUpdateRequestDto.password());
-        memberRepository.updateMember(member);
     }
 
     @Override
     public void deleteMember(Long id) {
-        memberRepository.findMemberById(id)
+        Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(id));
-        memberRepository.deleteMember(id);
+        memberRepository.delete(member);
     }
 }
