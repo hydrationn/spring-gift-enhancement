@@ -57,7 +57,7 @@ class ProductRequestDtoTest {
     @DisplayName("Product 생성 시, 상품명이 15자를 초과한 경우 400(Bad Request)를 반환한다. ")
     void createProduct_withNameTooLong_returns400() {
         String name = "하리보맛있네또사먹을게요많이파세요"; // 총 17자
-        ProductRequestDto productRequestDto = createProductRequestDto(name, 50, null);
+        ProductRequestDto productRequestDto = createProductRequestDto(name, 50, "http://img.url/test.png");
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(() ->
@@ -76,7 +76,7 @@ class ProductRequestDtoTest {
     @Test
     @DisplayName("Product 생성 시, 허용되지 않은 특수문자를 포함한 경우 400(Bad Request)를 반환한다. ")
     void createProduct_withBadCharacters_returns400() {
-        ProductRequestDto productRequestDto = createProductRequestDto("하리보!@", 20, null);
+        ProductRequestDto productRequestDto = createProductRequestDto("하리보!@", 20, "http://img.url/test.png");
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(() ->
@@ -95,7 +95,7 @@ class ProductRequestDtoTest {
     @Test
     @DisplayName("Product 생성 시, 음수 가격을 입력한 경우 400(Bad Request)를 반환한다. ")
     void createProduct_withNegativePrice_returns400() {
-        ProductRequestDto productRequestDto = createProductRequestDto("하리보 젤리", -2000, null);
+        ProductRequestDto productRequestDto = createProductRequestDto("하리보 젤리", -2000, "http://img.url/test.png");
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(() ->
@@ -114,7 +114,7 @@ class ProductRequestDtoTest {
     @Test
     @DisplayName("Product 생성 시, '카카오'가 포함된 문구를 입력한 경우 400(Bad Request)를 반환한다. ")
     void createProduct_withKakaoInName_returns400() {
-        ProductRequestDto productRequestDto = createProductRequestDto("카카오 젤리", 3000, null);
+        ProductRequestDto productRequestDto = createProductRequestDto("카카오 젤리", 3000, "http://img.url/test.png");
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(() ->
@@ -134,7 +134,7 @@ class ProductRequestDtoTest {
     @Test
     @DisplayName("Product 조회 시, 존재하는 ID로 조회하면 200(OK)을 반환한다. ")
     void findProduct_withExistingId_returns200() {
-        var productRequestDto = createProductRequestDto("하리보 젤리(지렁이)", 3000, null);
+        var productRequestDto = createProductRequestDto("하리보 젤리(지렁이)", 3000, "http://img.url/test.png");
 
         var created = client.post()
                 .uri(url)
@@ -199,7 +199,7 @@ class ProductRequestDtoTest {
     @Test
     @DisplayName("Product 삭제 시, 존재하는 ID면 204(No Content)를 반환한다. ")
     void deleteProduct_withExistingId_returns204() {
-        ProductRequestDto productRequestDto = createProductRequestDto("하리보 젤리", 1500, null);
+        ProductRequestDto productRequestDto = createProductRequestDto("하리보 젤리", 1500, "http://img.url/test.png");
 
         var created = client.post()
                 .uri(url)
