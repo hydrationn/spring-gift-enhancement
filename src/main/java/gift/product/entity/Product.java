@@ -1,10 +1,20 @@
 package gift.product.entity;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Product {
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)    private Long id;
     private String name;
+
+    @Column(nullable = false)
     private int price;
+
+    @Column(name = "image_url", nullable = false)
     private String imageUrl;
+
+    public Product() {}
 
     public Product(Long id, String name, int price, String imageUrl) {
         this.id = id;

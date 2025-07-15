@@ -29,7 +29,7 @@ public class WishServiceImpl implements WishService {
             throw new DuplicateWishException(memberId, productId);
         }
 
-        Product product = productRepository.findProductById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
 
         Wish savedWish = wishRepository.createWish(new Wish(memberId, productId));
@@ -43,7 +43,7 @@ public class WishServiceImpl implements WishService {
 
         return wishes.stream()
                 .map(wish -> {
-                    Product product = productRepository.findProductById(wish.getProductId())
+                    Product product = productRepository.findById(wish.getProductId())
                             .orElseThrow(() -> new ProductNotFoundException(wish.getProductId()));
                     return WishResponseDto.of(wish, product);
                 })
