@@ -50,13 +50,13 @@ class WishControllerTest {
     void setUp() {
         wishRepository.findAllWishByMemberId(memberId != null ? memberId : 1L)
                 .forEach(w -> wishRepository.deleteWishById(w.getId()));
-        memberRepository.findAllMembers()
-                .forEach(m -> memberRepository.deleteMember(m.getId()));
+        memberRepository.findAll()
+                .forEach(m -> memberRepository.delete(m));
         productRepository.findAllProducts(new PageRequestDto(0, Integer.MAX_VALUE))
                 .content()
                 .forEach(p -> productRepository.deleteProduct(p.getId()));
 
-        Member savedMember = memberRepository.saveMember(
+        Member savedMember = memberRepository.save(
                 new Member(null, "솨야", "wish@test.com", "pw", Role.USER)
         );
         Product savedProduct = productRepository.createProduct(

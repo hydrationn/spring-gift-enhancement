@@ -32,7 +32,7 @@ class MemberControllerTest {
 
     @BeforeEach
     void clearDatabase() {
-        memberRepository.findAllMembers().forEach(m -> memberRepository.deleteMember(m.getId()));
+        memberRepository.findAll().forEach(m -> memberRepository.delete(m));
     }
 
     @Test
@@ -114,7 +114,7 @@ class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(dto)))
                 .andDo(print());
 
-        Member saved = memberRepository.findMemberByEmail("psh@test.com").get();
+        Member saved = memberRepository.findByEmail("psh@test.com").get();
 
         mockMvc.perform(get("/api/members/" + saved.getId()))
                 .andExpect(status().isOk())
@@ -141,7 +141,7 @@ class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(dto)))
                 .andDo(print());
 
-        Member saved = memberRepository.findMemberByEmail("psh@test.com").get();
+        Member saved = memberRepository.findByEmail("psh@test.com").get();
 
         mockMvc.perform(delete("/api/members/" + saved.getId()))
                 .andExpect(status().isNoContent())
