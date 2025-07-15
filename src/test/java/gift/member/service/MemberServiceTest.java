@@ -1,4 +1,4 @@
-package gift.service;
+package gift.member.service;
 
 import gift.member.dto.MemberLoginRequestDto;
 import gift.member.dto.MemberRegisterRequestDto;

@@ -1,4 +1,4 @@
-package gift.service;
+package gift.wish.service;
 
 import gift.product.entity.Product;
 import gift.product.exception.ProductNotFoundException;

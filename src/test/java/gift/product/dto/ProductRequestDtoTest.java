@@ -1,4 +1,4 @@
-package gift.dto;
+package gift.product.dto;
 
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;

@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.wish.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.common.pagination.PageRequestDto;
