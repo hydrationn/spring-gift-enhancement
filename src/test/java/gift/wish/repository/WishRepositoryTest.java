@@ -4,8 +4,10 @@ import gift.wish.entity.Wish;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,17 +52,20 @@ class WishRepositoryTest {
     @Test
     void findAllByMemberId() {
         // given
-        wishes.save(new Wish(1L, 2L));
-        wishes.save(new Wish(1L, 3L));
-        wishes.save(new Wish(2L, 1L));
+        for (long i = 1; i <= 20; i++) {
+            wishes.save(new Wish(1L, i));
+        }
+
+        Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        List<Wish> result = wishes.findAllByMemberId(1L);
+        Page<Wish> result = wishes.findAllByMemberId(1L, pageable);
 
         // then
-        assertThat(result).hasSize(2)
-                .extracting(Wish::getProductId)
-                .containsExactlyInAnyOrder(2L, 3L);
+        assertThat(result.getContent()).hasSize(10);
+        assertThat(result.getTotalElements()).isEqualTo(20);
+        assertThat(result.getTotalPages()).isEqualTo(2);
+        assertThat(result.getNumber()).isEqualTo(0);
     }
 
     @Test

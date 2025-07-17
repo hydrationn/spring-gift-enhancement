@@ -9,6 +9,10 @@ import gift.wish.repository.WishRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -77,12 +81,15 @@ class WishServiceTest {
         Wish wish = new Wish(1L, memberId, 2L);
         Product product = new Product(2L, "하리보 젤리(콜라맛)", 2000, "http://img.url/coke.png");
 
-        when(wishRepository.findAllByMemberId(memberId)).thenReturn(List.of(wish));
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Wish> wishPage = new PageImpl<>(List.of(wish), pageable, 1);
+
+        when(wishRepository.findAllByMemberId(memberId, pageable)).thenReturn(wishPage);
         when(productRepository.findById(2L)).thenReturn(Optional.of(product));
 
-        List<WishResponseDto> result = wishService.findAllWishesByMemberId(memberId);
+        Page<WishResponseDto> result = wishService.findAllWishesByMemberId(memberId, pageable);
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).productName()).isEqualTo("하리보 젤리(콜라맛)");
+        assertThat(result.getContent().get(0).productName()).isEqualTo("하리보 젤리(콜라맛)");
     }
 }

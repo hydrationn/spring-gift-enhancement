@@ -92,8 +92,8 @@ class WishControllerTest {
         mockMvc.perform(get("/api/wishes")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].productName").value("하리보 젤리"));
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].productName").value("하리보 젤리"));
     }
 
     @Test
