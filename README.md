@@ -9,3 +9,9 @@ JdbcTemplate 기반 코드를 JPA로 리팩토링 하여 객체와 테이블을 
 - Product 엔티티 매핑
 - Wish 엔티티 매핑 (연관관계 포함)
 - @DataJpaTest 기반 Repository test code 작성
+
+## [STEP 2] 페이지네이션
+상품과 위시 리스트 보기에 페이지네이션을 구현한다.
+- Product Pagination
+- Member Pagination
+- Wish Pagination (상풍명 오름차순/내림차순 정렬 가능)
