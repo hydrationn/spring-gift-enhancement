@@ -8,10 +8,10 @@ import gift.member.exception.InvalidPasswordException;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.security.config.JwtProvider;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -60,14 +60,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberResponseDto> findAllMembers() {
-        return memberRepository.findAll().stream()
+    public Page<MemberResponseDto> findAllMembers(Pageable pageable) {
+        return memberRepository.findAll(pageable)
                 .map(member -> new MemberResponseDto(
                         member.getId(),
                         member.getName(),
                         member.getEmail(),
-                        member.getRole().name()))
-                .toList();
+                        member.getRole().name()
+                ));
     }
 
     @Override

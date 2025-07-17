@@ -2,11 +2,11 @@ package gift.member.controller;
 
 import gift.member.dto.*;
 import gift.member.service.MemberService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/members")
@@ -29,8 +29,8 @@ public class MemberController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MemberResponseDto>> findAllMembers() {
-        return ResponseEntity.ok(memberService.findAllMembers());
+    public ResponseEntity<Page<MemberResponseDto>> findAllMembers(Pageable pageable) {
+        return ResponseEntity.ok(memberService.findAllMembers(pageable));
     }
 
     @GetMapping("/{id}")

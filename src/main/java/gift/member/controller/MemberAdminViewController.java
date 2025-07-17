@@ -3,6 +3,9 @@ package gift.member.controller;
 import gift.member.dto.MemberResponseDto;
 import gift.member.dto.MemberUpdateRequestDto;
 import gift.member.service.MemberService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +20,12 @@ public class MemberAdminViewController {
     }
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("members", memberService.findAllMembers());
+    public String list(
+            @PageableDefault(size = 10) Pageable pageable,
+            Model model
+    ) {
+        Page<MemberResponseDto> page = memberService.findAllMembers(pageable);
+        model.addAttribute("page", page);
         return "member/list";
     }
 
