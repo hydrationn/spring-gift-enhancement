@@ -31,8 +31,8 @@ class MemberControllerTest {
     private MemberRepository memberRepository;
 
     @BeforeEach
-    void clearDatabase() {
-        memberRepository.findAll().forEach(m -> memberRepository.delete(m));
+    void setup() {
+        memberRepository.deleteAll();
     }
 
     @Test
