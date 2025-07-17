@@ -1,6 +1,10 @@
 package gift.wish.entity;
 
+import gift.member.entity.Member;
+import gift.product.entity.Product;
 import jakarta.persistence.*;
+
+import java.util.Objects;
 
 @Entity
 public class Wish {
@@ -8,38 +12,34 @@ public class Wish {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
-    private Long memberId;
+    private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    private Long productId;
+    private Product product;
 
-    public Wish() {}
+    protected Wish() {}
 
-    public Wish(Long id, Long memberId, Long productId) {
-        this.id = id;
-        this.memberId = memberId;
-        this.productId = productId;
-    }
-
-    public Wish(Long memberId, Long productId) {
-        this.memberId = memberId;
-        this.productId = productId;
+    public Wish(Member member, Product product) {
+        this.member = member;
+        this.product = product;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getMemberId() {
-        return memberId;
+    public Member getMember() {
+        return member;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
     public boolean isOwner(Long memberId) {
-        return this.memberId.equals(memberId);
+        return Objects.equals(member.getId(), memberId);
     }
 }

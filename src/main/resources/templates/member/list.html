@@ -15,19 +15,38 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="member : ${members}">
-        <td th:text="${member.id}">1</td>
-        <td th:text="${member.name}">홍길동</td>
-        <td th:text="${member.email}">test@example.com</td>
-        <td th:text="${member.role}">USER</td>
+    <tr th:each="member : ${page.content}">
+        <td th:text="${member.id}"></td>
+        <td th:text="${member.name}"></td>
+        <td th:text="${member.email}"></td>
+        <td th:text="${member.role}"></td>
         <td>
             <a th:href="@{/admin/members/{id}/update(id=${member.id})}">수정</a>
         </td>
     </tr>
     </tbody>
 </table>
-</body>
+
+<!-- 페이지네이션 -->
+<div>
+    <ul style="list-style: none; display: flex; gap: 10px; padding: 0;">
+        <li th:if="${page.hasPrevious()}">
+            <a th:href="@{/admin/members(page=${page.number - 1}, size=${page.size})}">이전</a>
+        </li>
+        <li th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
+            <a th:href="@{/admin/members(page=${i}, size=${page.size})}"
+               th:text="${i + 1}"
+               th:classappend="${i} == ${page.number} ? 'active' : ''"></a>
+        </li>
+        <li th:if="${page.hasNext()}">
+            <a th:href="@{/admin/members(page=${page.number + 1}, size=${page.size})}">다음</a>
+        </li>
+    </ul>
+</div>
+
 <form th:action="@{/admin/members/logout}" method="post">
     <button type="submit">로그아웃</button>
 </form>
+
+</body>
 </html>

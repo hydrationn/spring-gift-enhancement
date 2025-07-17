@@ -5,10 +5,11 @@ import gift.security.annotation.LoginMember;
 import gift.wish.dto.WishRequestDto;
 import gift.wish.dto.WishResponseDto;
 import gift.wish.service.WishService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/wishes")
@@ -30,10 +31,11 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishResponseDto>> findAllWish(
-            @LoginMember AuthenticatedMemberDto authenticatedMemberDto
+    public ResponseEntity<Page<WishResponseDto>> findAllWish(
+            @LoginMember AuthenticatedMemberDto authenticatedMemberDto,
+            @PageableDefault(size = 10) Pageable pageable
     ) {
-        List<WishResponseDto> result = wishService.findAllWishesByMemberId(authenticatedMemberDto.id());
+        Page<WishResponseDto> result = wishService.findAllWishesByMemberId(authenticatedMemberDto.id(), pageable);
         return ResponseEntity.ok(result);
     }
 

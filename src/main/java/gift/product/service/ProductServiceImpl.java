@@ -1,18 +1,13 @@
 package gift.product.service;
 
-import gift.common.pagination.PageRequestDto;
-import gift.common.pagination.PageResult;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.entity.Product;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -36,22 +31,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageResult<ProductResponseDto> findAllProducts(PageRequestDto pageRequestDto) {
-        Pageable pageable = PageRequest.of(pageRequestDto.page(), pageRequestDto.size());
-
-        Page<Product> page = productRepository.findAll(pageable);
-
-        List<ProductResponseDto> content = page.getContent().stream()
-                .map(ProductResponseDto::from)
-                .toList();
-
-        return new PageResult<>(
-                content,
-                page.getNumber(),
-                page.getTotalPages(),
-                page.getSize(),
-                (int) page.getTotalElements()
-        );
+    public Page<ProductResponseDto> findAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(ProductResponseDto::from);
     }
 
 

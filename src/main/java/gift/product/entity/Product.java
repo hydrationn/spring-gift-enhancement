@@ -14,7 +14,7 @@ public class Product {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    public Product() {}
+    protected Product() {}
 
     public Product(String name, int price, String imageUrl) {
         this.name = name;

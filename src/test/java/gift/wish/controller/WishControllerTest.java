@@ -41,8 +41,8 @@ class WishControllerTest {
     @Autowired
     JwtProvider jwtProvider;
 
-    private Long memberId;
-    private Long productId;
+    private Member member;
+    private Product product;
     private String jwtToken;
 
     @BeforeEach
@@ -51,23 +51,21 @@ class WishControllerTest {
         productRepository.deleteAll();
         memberRepository.deleteAll();
 
-        Member savedMember = memberRepository.save(
+        member = memberRepository.save(
                 new Member("솨야", "wish@test.com", "pw", Role.USER)
         );
-        Product savedProduct = productRepository.save(
+        product = productRepository.save(
                 new Product(null, "하리보 젤리", 1500, "http://img.url/test.png")
         );
 
-        memberId = savedMember.getId();
-        productId = savedProduct.getId();
-        jwtToken = jwtProvider.generateToken(savedMember);
+        jwtToken = jwtProvider.generateToken(member);
     }
 
     @Test
     @DisplayName("위시를 추가하면, 해당 상품 정보가 담긴 응답을 반환한다.")
     void shouldAddWish() throws Exception {
         // given
-        var dto = new WishRequestDto(productId);
+        var dto = new WishRequestDto(product.getId());
 
         // when & then
         mockMvc.perform(post("/api/wishes")
@@ -75,14 +73,14 @@ class WishControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.productId").value(productId))
+                .andExpect(jsonPath("$.productId").value(product.getId()))
                 .andExpect(jsonPath("$.productName").value("하리보 젤리"));
     }
 
     @Test
     @DisplayName("회원의 위시 목록을 조회하면, 해당 회원의 위시 목록을 반환한다.")
     void shouldGetWishes() throws Exception {
-        var dto = new WishRequestDto(productId);
+        var dto = new WishRequestDto(product.getId());
         mockMvc.perform(post("/api/wishes")
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -92,15 +90,17 @@ class WishControllerTest {
         mockMvc.perform(get("/api/wishes")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].productName").value("하리보 젤리"));
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].productName").value("하리보 젤리"));
     }
 
     @Test
     @DisplayName("위시 ID로 삭제 요청하면, 204(No Content)를 반환한다.")
     void shouldDeleteWish() throws Exception {
-        var savedWish = wishRepository.save(new Wish(null, memberId, productId));
+        // given
+        Wish savedWish = wishRepository.save(new Wish(member, product));
 
+        // when & then
         mockMvc.perform(delete("/api/wishes/" + savedWish.getId())
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isNoContent());

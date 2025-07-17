@@ -21,7 +21,7 @@ public class Member {
     @Column(nullable = false)
     private Role role;
 
-    public Member() {}
+    protected Member() {}
 
     public Member(String name, String email, String password, Role role) {
         this.name = name;
