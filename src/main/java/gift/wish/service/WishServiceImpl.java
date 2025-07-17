@@ -9,10 +9,10 @@ import gift.wish.entity.Wish;
 import gift.wish.exception.DuplicateWishException;
 import gift.wish.exception.WishNotFoundException;
 import gift.wish.repository.WishRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class WishServiceImpl implements WishService {
@@ -39,16 +39,14 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public List<WishResponseDto> findAllWishesByMemberId(Long memberId) {
-        List<Wish> wishes = wishRepository.findAllByMemberId(memberId);
+    public Page<WishResponseDto> findAllWishesByMemberId(Long memberId, Pageable pageable) {
+        Page<Wish> wishes = wishRepository.findAllByMemberId(memberId, pageable);
 
-        return wishes.stream()
-                .map(wish -> {
+        return wishes.map(wish -> {
                     Product product = productRepository.findById(wish.getProductId())
                             .orElseThrow(() -> new ProductNotFoundException(wish.getProductId()));
                     return WishResponseDto.of(wish, product);
-                })
-                .toList();
+                });
     }
 
     @Override
