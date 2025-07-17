@@ -9,12 +9,12 @@ public record WishResponseDto(
         String productName,
         int productPrice
 ) {
-    public static WishResponseDto of(Wish wish, Product product) {
+    public static WishResponseDto of(Wish wish) {
         return new WishResponseDto(
                 wish.getId(),
-                product.getId(),
-                product.getName(),
-                product.getPrice()
+                wish.getProduct().getId(),
+                wish.getProduct().getName(),
+                wish.getProduct().getPrice()
         );
     }
 }
