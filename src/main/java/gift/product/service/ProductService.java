@@ -1,15 +1,15 @@
 package gift.product.service;
 
-import gift.common.pagination.PageRequestDto;
-import gift.common.pagination.PageResult;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
 
     ProductResponseDto createProduct(ProductRequestDto productRequestDto);
 
-    PageResult<ProductResponseDto> findAllProducts(PageRequestDto pageRequestDto);
+    Page<ProductResponseDto> findAllProducts(Pageable pageable);
 
     ProductResponseDto findProductById(Long id);
 

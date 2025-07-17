@@ -1,11 +1,12 @@
 package gift.product.controller;
 
-import gift.common.pagination.PageRequestDto;
-import gift.common.pagination.PageResult;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,14 +41,12 @@ public class ProductViewController {
     }
 
     @GetMapping
-    public String list(@RequestParam(defaultValue = "0") int page,
-                       @RequestParam(defaultValue = "5") int size,
-                       Model model) {
-
-        PageRequestDto pageRequestDto = new PageRequestDto(page, size);
-        PageResult<ProductResponseDto> pageResult = productService.findAllProducts(pageRequestDto);
-
-        model.addAttribute("pageResult", pageResult);
+    public String list(
+            @PageableDefault(size = 10, sort = "id") Pageable pageable,
+            Model model
+    ) {
+        Page<ProductResponseDto> page = productService.findAllProducts(pageable);
+        model.addAttribute("page", page);
         return "product/list";
     }
 
