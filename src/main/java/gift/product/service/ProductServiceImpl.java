@@ -1,8 +1,10 @@
 package gift.product.service;
 
+import gift.option.entity.Option;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.entity.Product;
+import gift.product.exception.OptionRequiredException;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
+        if (productRequestDto.options() == null || productRequestDto.options().isEmpty()) {
+            throw new OptionRequiredException();
+        }
+
         Product product = new Product(
                 null,
                 productRequestDto.name(),
@@ -27,6 +33,11 @@ public class ProductServiceImpl implements ProductService {
                 productRequestDto.imageUrl()
         );
         Product created = productRepository.save(product);
+
+        productRequestDto.options().forEach(optDto ->
+                created.addOption(new Option(created, optDto.name(), optDto.quantity()))
+        );
+
         return ProductResponseDto.from(created);
     }
 
