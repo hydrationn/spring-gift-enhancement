@@ -20,7 +20,7 @@ class OptionRepositoryTest {
     private ProductRepository productRepository;
 
     @Test
-    @DisplayName("상품 ID로 옵션 목록을 조회할 수 있다")
+    @DisplayName("상품 ID로 옵션 목록을 조회할 수 있다. ")
     void findByProductId_returnsList() {
         Product p = new Product("하리보 젤리", 2000, "http://img.url/test.png");
         productRepository.save(p);
@@ -32,7 +32,7 @@ class OptionRepositoryTest {
     }
 
     @Test
-    @DisplayName("동일 상품 내 옵션명 중복 여부를 반환한다")
+    @DisplayName("동일 상품 내 옵션명 중복 여부를 반환한다. ")
     void existsByProductIdAndName_returnsTrue() {
         Product p = new Product("하리보 젤리", 2000, "http://img.url/test.png");
         productRepository.save(p);

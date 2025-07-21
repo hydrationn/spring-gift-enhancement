@@ -74,7 +74,7 @@ class OptionServiceTest {
     }
 
     @Test
-    @DisplayName("옵션 수량을 지정된 수만큼 차감할 수 있다")
+    @DisplayName("옵션 수량을 지정된 수만큼 차감할 수 있다. ")
     void subtractQuantity_success() {
         Long optionId = 1L;
         Option option = mock(Option.class);

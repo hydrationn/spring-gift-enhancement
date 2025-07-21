@@ -107,7 +107,7 @@ class OptionControllerTest {
     }
 
     @Test
-    @DisplayName("POST /api/products/{id}/options — 옵션 생성 시 특수문자 에러 400 반환")
+    @DisplayName("옵션 생성 시, 특수문자 에러 400 반환한다. ")
     void createOption_withBadCharacters_returns400() throws Exception {
         var badDto = new OptionCreateRequestDto("잘못된 상품명!!", 5);
 

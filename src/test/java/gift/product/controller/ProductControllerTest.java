@@ -27,7 +27,7 @@ class ProductControllerTest {
     ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("상품 생성 시 옵션 없이 요청하면 400 Bad Request")
+    @DisplayName("상품 생성 시 옵션 없이 요청하면 400(Bad Request)가 반환된다. ")
     void createProduct_withoutOptions_returns400() throws Exception {
         var dto = new ProductRequestDto(
                 "젤리",
