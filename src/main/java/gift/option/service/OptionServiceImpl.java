@@ -6,6 +6,7 @@ import gift.option.dto.OptionUpdateRequestDto;
 import gift.option.entity.Option;
 import gift.option.exception.DuplicateOptionException;
 import gift.option.exception.OptionNotFoundException;
+import gift.option.exception.OptionRequiredException;
 import gift.option.repository.OptionRepository;
 import gift.product.entity.Product;
 import gift.product.exception.ProductNotFoundException;
@@ -73,5 +74,17 @@ public class OptionServiceImpl implements OptionService {
 
         option.update(request.name(), request.quantity());
         return OptionResponseDto.from(option);
+    }
+
+    @Override
+    @Transactional
+    public void deleteOption(Long productId, Long optionId) {
+        List<Option> options = optionRepository.findByProductId(productId);
+
+        if (options.size() <= 1) {
+            throw new OptionRequiredException();
+        }
+
+        optionRepository.deleteById(optionId);
     }
 }

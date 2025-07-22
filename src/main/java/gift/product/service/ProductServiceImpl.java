@@ -4,7 +4,7 @@ import gift.option.entity.Option;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.entity.Product;
-import gift.product.exception.OptionRequiredException;
+import gift.option.exception.OptionRequiredException;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import org.springframework.data.domain.Page;

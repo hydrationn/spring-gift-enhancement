@@ -11,4 +11,5 @@ public interface OptionService {
     OptionResponseDto createOption(Long productId, OptionCreateRequestDto createRequestDto);
     void subtractQuantity(Long optionId, int quantity);
     OptionResponseDto updateOption(Long productId, Long optionId, OptionUpdateRequestDto updateRequestDto);
+    void deleteOption(Long productId, Long optionId);
 }

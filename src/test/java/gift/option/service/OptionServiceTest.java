@@ -5,6 +5,7 @@ import gift.option.dto.OptionUpdateRequestDto;
 import gift.option.entity.Option;
 import gift.option.exception.DuplicateOptionException;
 import gift.option.exception.OptionNotFoundException;
+import gift.option.exception.OptionRequiredException;
 import gift.option.repository.OptionRepository;
 import gift.product.entity.Product;
 import gift.product.exception.ProductNotFoundException;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -126,5 +129,38 @@ class OptionServiceTest {
 
         assertThatThrownBy(() -> optionService.updateOption(productId, optionId, req))
                 .isInstanceOf(DuplicateOptionException.class);
+    }
+
+    @Test
+    @DisplayName("옵션이 없으면 삭제 시 OptionRequiredException(404)이 발생한다. ")
+    void deleteOption_noOptions_throws() {
+        Long productId = 1L;
+        Long optionId  = 10L;
+
+        when(optionRepository.findByProductId(productId))
+                .thenReturn(Collections.emptyList());
+
+        assertThatThrownBy(() -> optionService.deleteOption(productId, optionId))
+                .isInstanceOf(OptionRequiredException.class)
+                .hasMessage("상품에는 하나 이상의 옵션이 필요합니다.");
+
+        verify(optionRepository, never()).deleteById(anyLong());
+    }
+
+    @Test
+    @DisplayName("옵션이 두 개 이상 있으면 정상적으로 deleteById를 호출한다. ")
+    void deleteOption_success() {
+        Long productId = 1L;
+        Long optionId  = 10L;
+
+        when(optionRepository.findByProductId(productId))
+                .thenReturn(List.of(
+                        mock(gift.option.entity.Option.class),
+                        mock(gift.option.entity.Option.class)
+                ));
+
+        optionService.deleteOption(productId, optionId);
+
+        verify(optionRepository).deleteById(optionId);
     }
 }
