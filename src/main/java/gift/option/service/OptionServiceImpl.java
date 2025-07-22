@@ -11,10 +11,12 @@ import gift.product.entity.Product;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class OptionServiceImpl implements OptionService {
 
     private final OptionRepository optionRepository;
@@ -34,6 +36,7 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
+    @Transactional
     public OptionResponseDto createOption(Long productId, OptionCreateRequestDto request) {
         if (optionRepository.existsByProductIdAndName(productId, request.name())) {
             throw new DuplicateOptionException();
@@ -49,6 +52,7 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
+    @Transactional
     public void subtractQuantity(Long optionId, int quantity) {
         Option option = optionRepository.findById(optionId)
                 .orElseThrow(() -> new OptionNotFoundException(optionId));
@@ -57,6 +61,7 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
+    @Transactional
     public OptionResponseDto updateOption(Long productId, Long optionId, OptionUpdateRequestDto request) {
         Option option = optionRepository.findById(optionId)
                 .orElseThrow(() -> new OptionNotFoundException(optionId));
